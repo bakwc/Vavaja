@@ -1,4 +1,4 @@
-#include <iostream>
+п»ї#include <iostream>
 #include <fstream>
 #include <stdlib.h>
 
@@ -29,7 +29,7 @@ void interrupt(short intId,unsigned char *memory,short *regs, float *regsFloat)
 
 int main()
 {
-    unsigned char memory[15000]; // общая память
+    unsigned char memory[15000]; // РѕР±С‰Р°СЏ РїР°РјСЏС‚СЊ
     short regs[8];
     float regsFloat[8];
     short &pc=regs[6];
@@ -41,8 +41,8 @@ int main()
     in.seekg (0, ios::beg);
     in.read((char*)memory,length);
     in.close();
-    sp=length+1;    // стек начинается сразу после кода
-    pc=0;           // - текущая команда
+    sp=length+1;    // СЃС‚РµРє РЅР°С‡РёРЅР°РµС‚СЃСЏ СЃСЂР°Р·Сѓ РїРѕСЃР»Рµ РєРѕРґР°
+    pc=0;           // - С‚РµРєСѓС‰Р°СЏ РєРѕРјР°РЅРґР°
 /*
     for (int i=0;i<length;i++)
         cout << (int)memory[i] << "\n";

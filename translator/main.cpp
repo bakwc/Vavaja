@@ -1,4 +1,4 @@
-#include <stdlib.h>
+п»ї#include <stdlib.h>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -13,14 +13,14 @@ typedef map<string,unsigned> Regs;
 typedef vector<string> Args;
 
 //------------------------------------------------------------------------------------------
-std::string itoa(int num)	// число в строку
+std::string itoa(int num)	// С‡РёСЃР»Рѕ РІ СЃС‚СЂРѕРєСѓ
 {
 	std::stringstream out;
 	out << num;
 	return out.str();
 }
 //------------------------------------------------------------------------------------------
-int atoi(std::string const &str)  // строку в число
+int atoi(std::string const &str)  // СЃС‚СЂРѕРєСѓ РІ С‡РёСЃР»Рѕ
 {
 	std::istringstream stream(str);
 	int number = 0;
@@ -146,7 +146,7 @@ void putReg(string reg,Regs &regs,unsigned char *addr,int &cur)
 int main(int arc, char **argv)
 {
     unsigned char bcode[5000];
-    Regs regs,regsFloat; // Список целых и дробных регистров и их номера
+    Regs regs,regsFloat; // РЎРїРёСЃРѕРє С†РµР»С‹С… Рё РґСЂРѕР±РЅС‹С… СЂРµРіРёСЃС‚СЂРѕРІ Рё РёС… РЅРѕРјРµСЂР°
     int cur=0,cline=0;
     string infile,outfile;
     infile="program.asm";

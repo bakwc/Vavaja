@@ -296,20 +296,20 @@ void cmdMov(Args &args,Regs &regs,Regs &regsFloat,int &cur,unsigned char *bcode,
             }
 }
 
-void cmdAdd(Args &args,Regs &regs,Regs &regsFloat,int &cur,unsigned char *bcode,int &cline)
+void cmdTwoRegs(Args &args,Regs &regs,Regs &regsFloat,int &cur,unsigned char *bcode,int &cline,OpType startCode)
 {
             if (args.size()!=3) error(cline,"Syntax error"); else
             if (isRegister(args[2],regs))
             {
                 if (isRegister(args[1],regs))
                 {
-                    putByte(23,bcode,cur);
+                    putByte(startCode+1,bcode,cur);
                     putReg(args[1],regs,bcode,cur);
                     putReg(args[2],regs,bcode,cur);
                 } else
                 if (isNumber(args[1]))
                 {
-                    putByte(22,bcode,cur);
+                    putByte(startCode,bcode,cur);
                     putNum(args[1],bcode,cur);
                     putReg(args[2],regs,bcode,cur);
                 }else error(cline,"Syntax error");
@@ -318,13 +318,13 @@ void cmdAdd(Args &args,Regs &regs,Regs &regsFloat,int &cur,unsigned char *bcode,
             {
                 if (isRegister(args[1],regsFloat))
                 {
-                    putByte(25,bcode,cur);
+                    putByte(startCode+3,bcode,cur);
                     putReg(args[1],regsFloat,bcode,cur);
                     putReg(args[2],regsFloat,bcode,cur);
                 } else
                 if (isFloat(args[1]))
                 {
-                    putByte(24,bcode,cur);
+                    putByte(startCode+2,bcode,cur);
                     putFloat(args[1],bcode,cur);
                     putReg(args[2],regs,bcode,cur);
                 }else error(cline,"Syntax error");
@@ -375,43 +375,12 @@ int main(int arc, char **argv)
         else
         if (args[0]=="add")
         {
-			cmdAdd(args,regs,regsFloat,cur,bcode,cline);
+			cmdTwoRegs(args,regs,regsFloat,cur,bcode,cline,OP_ADD_1);
         }
         else
         if (args[0]=="sub")
         {
-            if (args.size()!=3) error(cline,"Syntax error"); else
-            if (isRegister(args[2],regs))
-            {
-                if (isRegister(args[1],regs))
-                {
-                    putByte(OP_SUB_2,bcode,cur);
-                    putReg(args[1],regs,bcode,cur);
-                    putReg(args[2],regs,bcode,cur);
-                } else
-                if (isNumber(args[1]))
-                {
-                    putByte(OP_SUB_1,bcode,cur);
-                    putNum(args[1],bcode,cur);
-                    putReg(args[2],regs,bcode,cur);
-                }else error(cline,"Syntax error");
-            } else
-            if (isRegister(args[2],regsFloat))
-            {
-                if (isRegister(args[1],regsFloat))
-                {
-                    putByte(OP_SUB_4,bcode,cur);
-                    putReg(args[1],regsFloat,bcode,cur);
-                    putReg(args[2],regsFloat,bcode,cur);
-                } else
-                if (isFloat(args[1]))
-                {
-                    putByte(OP_SUB_3,bcode,cur);
-                    putFloat(args[1],bcode,cur);
-                    putReg(args[2],regs,bcode,cur);
-                }else error(cline,"Syntax error");
-
-            } else error(cline,"Syntax error");
+            cmdTwoRegs(args,regs,regsFloat,cur,bcode,cline,OP_SUB_1);
         }
         else
         {
@@ -425,14 +394,6 @@ int main(int arc, char **argv)
     out.close();
 
 	printBcode(bcode,cur);
-	
-	/*
-    for (int i=0;i<cur;i++)
-    {
-        int j=(*(char*)(bcode+i));
-        cout << j << "\n";
-    }
-	*/
 
     return 0;
 }

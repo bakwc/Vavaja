@@ -28,13 +28,13 @@ int atoi(std::string const &str)  // строку в число
 	if (stream.fail()) throw 1;
 	return number;
 }
-
+//------------------------------------------------------------------------------------------
 void error(int line,string errMsg)
 {
     cout << "\nERROR! Line " << line << ": " << errMsg << ";\n";
     exit(19);
 }
-
+//------------------------------------------------------------------------------------------
 bool isNumber(const string &str)
 {
     unsigned numcnt=0;
@@ -48,12 +48,12 @@ bool isNumber(const string &str)
     }
     return (str.length()==numcnt);
 }
-
+//------------------------------------------------------------------------------------------
 bool isRegister(string &str, Regs &regs)
 {
     return regs.find(str)!=regs.end();
 }
-
+//------------------------------------------------------------------------------------------
 bool isMemory(string &str)
 {
     if (str[0]=='%')
@@ -63,7 +63,7 @@ bool isMemory(string &str)
     }
     return false;
 }
-
+//------------------------------------------------------------------------------------------
 bool isFloat(const string &str)
 {
     unsigned numcnt=0;
@@ -83,7 +83,7 @@ bool isFloat(const string &str)
     }
     return ((str.length()==numcnt) && isDot);
 }
-
+//------------------------------------------------------------------------------------------
 void initRegs(Regs &regs)
 {
     regs["ah"]=0;
@@ -95,7 +95,7 @@ void initRegs(Regs &regs)
     regs["pc"]=6;
     regs["rh"]=7;
 }
-
+//------------------------------------------------------------------------------------------
 void initRegsFloat(Regs &regs)
 {
     regs["eax"]=0;
@@ -105,6 +105,7 @@ void initRegsFloat(Regs &regs)
     regs["eex"]=4;
     regs["esp"]=5;
 }
+//------------------------------------------------------------------------------------------
 void parse(string &str,Args &args)
 {
     int n=str.find(" ");
@@ -118,31 +119,31 @@ void parse(string &str,Args &args)
     }
     args.push_back(str);
 }
-
+//------------------------------------------------------------------------------------------
 void putByte(const unsigned char byte,unsigned char *addr,int &cur)
 {
     *(addr+cur)=byte;
     cur++;
 }
-
+//------------------------------------------------------------------------------------------
 void putNum(string num,unsigned char *addr,int &cur)
 {
     *((short*)(addr+cur))=atoi(num);
     cur+=2;
 }
-
+//------------------------------------------------------------------------------------------
 void putFloat(string num,unsigned char *addr,int &cur)
 {
     *((float*)(addr+cur))=atoi(num);
     cur+=4;
 }
-
+//------------------------------------------------------------------------------------------
 void putReg(string reg,Regs &regs,unsigned char *addr,int &cur)
 {
     *(addr+cur)=regs[reg];
     cur++;
 }
-
+//------------------------------------------------------------------------------------------
 void printBcode(unsigned char *bcode, size_t len)
 {
 	for (int i=0;i<len;i++)
@@ -152,7 +153,7 @@ void printBcode(unsigned char *bcode, size_t len)
     }
 	cout << "\n";
 }
-
+//------------------------------------------------------------------------------------------
 void cmdMov(Args &args,Regs &regs,Regs &regsFloat,int &cur,unsigned char *bcode,int &cline)
 {
             if (args.size()!=3) error(cline,"Syntax error"); else
@@ -295,7 +296,7 @@ void cmdMov(Args &args,Regs &regs,Regs &regsFloat,int &cur,unsigned char *bcode,
                 }
             }
 }
-
+//------------------------------------------------------------------------------------------
 void cmdTwoRegs(Args &args,Regs &regs,Regs &regsFloat,int &cur,unsigned char *bcode,int &cline,OpType startCode)
 {
             if (args.size()!=3) error(cline,"Syntax error"); else
@@ -331,7 +332,7 @@ void cmdTwoRegs(Args &args,Regs &regs,Regs &regsFloat,int &cur,unsigned char *bc
 
             } else error(cline,"Syntax error");
 }
-
+//------------------------------------------------------------------------------------------
 int main(int arc, char **argv)
 {
     unsigned char bcode[5000];

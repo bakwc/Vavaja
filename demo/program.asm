@@ -1,4 +1,4 @@
-﻿int 13
+int 13
 mov ah bh
 int 13
 add ah bh

@@ -6,3 +6,4 @@ int 13
 sub ah bh
 mov bh ah
 int 11
+int 10

@@ -5,7 +5,7 @@
 #include <string>
 #include <map>
 #include <vector>
-#include <conio.h>
+#include "../params/defines.h"
 
 using namespace std;
 
@@ -143,37 +143,22 @@ void putReg(string reg,Regs &regs,unsigned char *addr,int &cur)
     cur++;
 }
 
-int main(int arc, char **argv)
+void printBcode(unsigned char *bcode, size_t len)
 {
-    unsigned char bcode[5000];
-    Regs regs,regsFloat; // Список целых и дробных регистров и их номера
-    int cur=0,cline=0;
-    string infile,outfile;
-    infile="program.asm";
-    outfile="program.ve";
-    initRegs(regs);
-    initRegsFloat(regsFloat);
-
-    ifstream source(infile);
-    while (!source.eof())
+	for (int i=0;i<len;i++)
     {
-        string tmp;
-        Args args;
-        getline(source,tmp);
-        if (tmp.length()==0) continue;
-        parse(tmp,args);
-        cline++;
-        if (args[0]=="pass")
-        {
-            putByte(19,bcode,cur);
-        }
-        else
-        if (args[0]=="mov")
-        {
+        int j=(*(char*)(bcode+i));
+        cout << j << " ";
+    }
+	cout << "\n";
+}
+
+void cmdMov(Args &args,Regs &regs,Regs &regsFloat,int &cur,unsigned char *bcode,int &cline)
+{
             if (args.size()!=3) error(cline,"Syntax error"); else
             if (isNumber(args[1]) && isRegister(args[2],regs))
             {
-                putByte(1,bcode,cur);
+                putByte(OP_MOV_1,bcode,cur);
                 putNum(args[1],bcode,cur);
                 putReg(args[2],regs,bcode,cur);
             } else
@@ -181,13 +166,13 @@ int main(int arc, char **argv)
             {
                 if (isNumber(args[2]))
                 {
-                    putByte(2,bcode,cur);
+                    putByte(OP_MOV_2,bcode,cur);
                     putNum(args[1],bcode,cur);
                     putNum(args[2],bcode,cur);
                 } else
                 if (isRegister(args[2],regs))
                 {
-                    putByte(3,bcode,cur);
+                    putByte(OP_MOV_3,bcode,cur);
                     putNum(args[1],bcode,cur);
                     putReg(args[2],regs,bcode,cur);
                 } else
@@ -197,7 +182,7 @@ int main(int arc, char **argv)
             } else
             if (isFloat(args[1]) && isRegister(args[2],regsFloat))
             {
-                putByte(4,bcode,cur);
+                putByte(OP_MOV_4,bcode,cur);
                 putFloat(args[1],bcode,cur);
                 putReg(args[2],regsFloat,bcode,cur);
             }else
@@ -205,13 +190,13 @@ int main(int arc, char **argv)
             {
                 if (isNumber(args[2]))
                 {
-                    putByte(5,bcode,cur);
+                    putByte(OP_MOV_5,bcode,cur);
                     putFloat(args[1],bcode,cur);
                     putNum(args[2],bcode,cur);
                 } else
                 if (isRegister(args[2],regs))
                 {
-                    putByte(6,bcode,cur);
+                    putByte(OP_MOV_6,bcode,cur);
                     putFloat(args[1],bcode,cur);
                     putReg(args[2],regs,bcode,cur);
                 } else
@@ -221,7 +206,7 @@ int main(int arc, char **argv)
             } else
             if (isRegister(args[1],regs) && isRegister(args[2],regs))
             {
-                putByte(7,bcode,cur);
+                putByte(OP_MOV_7,bcode,cur);
                 putReg(args[1],regs,bcode,cur);
                 putReg(args[2],regs,bcode,cur);
             } else
@@ -229,13 +214,13 @@ int main(int arc, char **argv)
             {
                 if (isNumber(args[2]))
                 {
-                    putByte(8,bcode,cur);
+                    putByte(OP_MOV_8,bcode,cur);
                     putReg(args[1],regs,bcode,cur);
                     putNum(args[2],bcode,cur);
                 } else
                 if (isRegister(args[2],regs))
                 {
-                    putByte(9,bcode,cur);
+                    putByte(OP_MOV_9,bcode,cur);
                     putReg(args[1],regs,bcode,cur);
                     putReg(args[2],regs,bcode,cur);
                 } else
@@ -245,7 +230,7 @@ int main(int arc, char **argv)
             } else
             if (isRegister(args[1],regsFloat) && isRegister(args[2],regsFloat))
             {
-                putByte(10,bcode,cur);
+                putByte(OP_MOV_10,bcode,cur);
                 putReg(args[1],regsFloat,bcode,cur);
                 putReg(args[2],regsFloat,bcode,cur);
             } else
@@ -253,13 +238,13 @@ int main(int arc, char **argv)
             {
                 if (isNumber(args[2]))
                 {
-                    putByte(11,bcode,cur);
+                    putByte(OP_MOV_11,bcode,cur);
                     putReg(args[1],regsFloat,bcode,cur);
                     putNum(args[2],bcode,cur);
                 } else
                 if (isRegister(args[2],regs))
                 {
-                    putByte(12,bcode,cur);
+                    putByte(OP_MOV_12,bcode,cur);
                     putReg(args[1],regsFloat,bcode,cur);
                     putReg(args[2],regs,bcode,cur);
                 } else
@@ -273,13 +258,13 @@ int main(int arc, char **argv)
                 {
                     if (isRegister(args[2],regs))
                     {
-                        putByte(13,bcode,cur);
+                        putByte(OP_MOV_13,bcode,cur);
                         putNum(args[1],bcode,cur);
                         putReg(args[2],regs,bcode,cur);
                     } else
                     if (isRegister(args[2],regsFloat))
                     {
-                        putByte(14,bcode,cur);
+                        putByte(OP_MOV_14,bcode,cur);
                         putNum(args[1],bcode,cur);
                         putReg(args[2],regsFloat,bcode,cur);
                     } else
@@ -291,13 +276,13 @@ int main(int arc, char **argv)
                 {
                     if (isRegister(args[2],regs))
                     {
-                        putByte(15,bcode,cur);
+                        putByte(OP_MOV_15,bcode,cur);
                         putReg(args[1],regs,bcode,cur);
                         putReg(args[2],regs,bcode,cur);
                     } else
                     if (isRegister(args[2],regsFloat))
                     {
-                        putByte(16,bcode,cur);
+                        putByte(OP_MOV_16,bcode,cur);
                         putReg(args[1],regs,bcode,cur);
                         putReg(args[2],regsFloat,bcode,cur);
                     } else
@@ -309,22 +294,10 @@ int main(int arc, char **argv)
                     error(cline,"Syntax error");
                 }
             }
+}
 
-        }
-        else
-        if (args[0]=="int")
-        {
-            if (args.size()!=2) error(cline,"Syntax error"); else
-            if (isNumber(args[1]))
-            {
-                putByte(20,bcode,cur);
-                putNum(args[1],bcode,cur);
-            } else
-                error(cline,"Syntax error");
-        }
-        else
-        if (args[0]=="add")
-        {
+void cmdAdd(Args &args,Regs &regs,Regs &regsFloat,int &cur,unsigned char *bcode,int &cline)
+{
             if (args.size()!=3) error(cline,"Syntax error"); else
             if (isRegister(args[2],regs))
             {
@@ -357,6 +330,52 @@ int main(int arc, char **argv)
                 }else error(cline,"Syntax error");
 
             } else error(cline,"Syntax error");
+}
+
+int main(int arc, char **argv)
+{
+    unsigned char bcode[5000];
+    Regs regs,regsFloat; // Список целых и дробных регистров и их номера
+    int cur=0,cline=0;
+    string infile,outfile;
+    infile="../demo/program.asm";
+    outfile="../demo/program.ve";
+    initRegs(regs);
+    initRegsFloat(regsFloat);
+
+    ifstream source(infile);
+    while (!source.eof())
+    {
+        string tmp;
+        Args args;
+        getline(source,tmp);
+        if (tmp.length()==0) continue;
+        parse(tmp,args);
+        cline++;
+        if (args[0]=="pass")
+        {
+            putByte(OP_PASS,bcode,cur);
+        }
+        else
+        if (args[0]=="mov")
+        {
+			cmdMov(args,regs,regsFloat,cur,bcode,cline);
+        }
+        else
+        if (args[0]=="int")
+        {
+            if (args.size()!=2) error(cline,"Syntax error"); else
+            if (isNumber(args[1]))
+            {
+                putByte(OP_INT,bcode,cur);
+                putNum(args[1],bcode,cur);
+            } else
+                error(cline,"Syntax error");
+        }
+        else
+        if (args[0]=="add")
+        {
+			cmdAdd(args,regs,regsFloat,cur,bcode,cline);
         }
         else
         if (args[0]=="sub")
@@ -366,13 +385,13 @@ int main(int arc, char **argv)
             {
                 if (isRegister(args[1],regs))
                 {
-                    putByte(27,bcode,cur);
+                    putByte(OP_SUB_2,bcode,cur);
                     putReg(args[1],regs,bcode,cur);
                     putReg(args[2],regs,bcode,cur);
                 } else
                 if (isNumber(args[1]))
                 {
-                    putByte(26,bcode,cur);
+                    putByte(OP_SUB_1,bcode,cur);
                     putNum(args[1],bcode,cur);
                     putReg(args[2],regs,bcode,cur);
                 }else error(cline,"Syntax error");
@@ -381,13 +400,13 @@ int main(int arc, char **argv)
             {
                 if (isRegister(args[1],regsFloat))
                 {
-                    putByte(29,bcode,cur);
+                    putByte(OP_SUB_4,bcode,cur);
                     putReg(args[1],regsFloat,bcode,cur);
                     putReg(args[2],regsFloat,bcode,cur);
                 } else
                 if (isFloat(args[1]))
                 {
-                    putByte(28,bcode,cur);
+                    putByte(OP_SUB_3,bcode,cur);
                     putFloat(args[1],bcode,cur);
                     putReg(args[2],regs,bcode,cur);
                 }else error(cline,"Syntax error");
@@ -405,12 +424,15 @@ int main(int arc, char **argv)
     out.write((char*)bcode,cur);
     out.close();
 
+	printBcode(bcode,cur);
+	
+	/*
     for (int i=0;i<cur;i++)
     {
         int j=(*(char*)(bcode+i));
         cout << j << "\n";
     }
-    _getch();
+	*/
 
     return 0;
 }

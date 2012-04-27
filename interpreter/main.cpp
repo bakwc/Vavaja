@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include <fstream>
 #include <stdlib.h>
+#include "../params/defines.h"
 
 using namespace std;
 
@@ -9,19 +10,19 @@ void interrupt(short intId,unsigned char *memory,short *regs, float *regsFloat)
     //cout << "INT " << intId << "\n";
     switch (intId)
     {
-        case 10:
+        case INT_EXIT:
         exit(0);
         break;
-        case 11:
+        case INT_OUTPUT_INT:
         cout << regs[0] << endl;
         break;
-        case 12:
+        case INT_OUPUT_FLOAT:
         cout << regsFloat[0] << endl;
         break;
-        case 13:
+        case  INT_INPUT_INT:
         cin >> regs[0];
         break;
-        case 14:
+        case INT_INTPUT_FLOAT:
         cin >> regsFloat[0];
         break;
     }
@@ -35,7 +36,7 @@ int main()
     short &pc=regs[6];
     short &sp=regs[5];
 
-    ifstream in("program.ve",ios::binary);
+    ifstream in("../demo/program.ve",ios::binary);
     in.seekg (0, ios::end);
     int length = in.tellg();
     in.seekg (0, ios::beg);
@@ -52,31 +53,31 @@ int main()
         //cout << "Cmd: " << (int)memory[pc] << "\n";
         switch(memory[pc])
         {
-            case 19:
+            case OP_PASS:
             cout << "PASS\n";
             break;
-            case 20:
+            case OP_INT:
             {
                 short intId=*((short*)(memory+pc+1));
                 interrupt(intId,memory,regs,regsFloat);
                 pc+=2;
             } break;
 
-            case 1:
+            case OP_MOV_1:
             {
                 short num=*((short*)(memory+pc+1));
                 size_t reg=*(memory+pc+3);
                 regs[reg]=num;
                 pc+=3;
             } break;
-            case 2:
+            case OP_MOV_2:
             {
                 short num=*((short*)(memory+pc+1));
                 short mem=*((short*)(memory+pc+3));
                 *((short*)memory+mem)=num;
                 pc+=4;
             } break;
-            case 3:
+            case OP_MOV_3:
             {
                 short num=*((short*)(memory+pc+1));
                 size_t reg=*(memory+pc+3);
@@ -85,7 +86,7 @@ int main()
                 pc+=3;
             } break;
 
-            case 7:
+            case OP_MOV_7:
             {
                 size_t reg1=*(memory+pc+1);
                 size_t reg2=*(memory+pc+2);
@@ -93,7 +94,7 @@ int main()
                 pc+=2;
             } break;
 
-            case 8:
+            case OP_MOV_8:
             {
                 size_t reg=*(memory+pc+1);
                 short mem=*((short*)(memory+pc+2));
@@ -101,7 +102,7 @@ int main()
                 pc+=3;
             } break;
 
-            case 9:
+            case OP_MOV_9:
             {
                 size_t reg1=*(memory+pc+1);
                 size_t reg2=*(memory+pc+2);
@@ -110,14 +111,14 @@ int main()
                 pc+=2;
             } break;
 
-            case 13:
+            case OP_MOV_13:
             {
                 short mem=*((short*)(memory+pc+1));
                 size_t reg=*(memory+pc+3);
                 regs[reg]=*((short*)memory+mem);
                 pc+=3;
             } break;
-            case 15:
+            case OP_MOV_15:
             {
                 size_t memreg=*(memory+pc+1);
                 size_t reg=*(memory+pc+2);
@@ -126,28 +127,28 @@ int main()
                 pc+=2;
             } break;
 
-            case 22:
+            case OP_ADD_1:
             {
                 short num=*((short*)(memory+pc+1));
                 size_t reg=*(memory+pc+3);
                 regs[reg]+=num;
                 pc+=3;
             } break;
-            case 23:
+            case OP_ADD_2:
             {
                 size_t reg1=*(memory+pc+1);
                 size_t reg2=*(memory+pc+2);
                 regs[reg2]+=regs[reg1];
                 pc+=2;
             } break;
-            case 26:
+            case OP_SUB_1:
             {
                 short num=*((short*)(memory+pc+1));
                 size_t reg=*(memory+pc+3);
                 regs[reg]-=num;
                 pc+=3;
             } break;
-            case 27:
+            case OP_SUB_2:
             {
                 size_t reg1=*(memory+pc+1);
                 size_t reg2=*(memory+pc+2);

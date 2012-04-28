@@ -155,8 +155,82 @@ int main()
                 regs[reg2]-=regs[reg1];
                 pc+=2;
             } break;
+			case OP_MUL_1:
+            {
+				short num=*((short*)(memory+pc+1));
+                regs[0]*=num;
+                pc+=2;
+            } break;
+			case OP_MUL_2:
+            {
+				size_t reg1=*(memory+pc+1);
+                regs[0]*=regs[reg1];
+                pc+=1;
+            } break;
+			case OP_DIV_1:
+            {
+				short num=*((short*)(memory+pc+1));
+				regs[4]=regs[0]%num;
+                regs[0]/=num;
+                pc+=2;
+            } break;
+			case OP_DIV_2:
+            {
+				size_t reg1=*(memory+pc+1);
+				regs[4]=regs[0]%regs[reg1];
+                regs[0]/=regs[reg1];
+                pc+=1;
+            } break;
+			case OP_CMP_1:
+            {
+                short num=*((short*)(memory+pc+1));
+                size_t reg=*(memory+pc+3);
+				if (num==regs[reg]) regs[4]=0;
+				else if (num>regs[reg]) regs[4]=1;
+				else regs[4]=-1;
+                pc+=3;
+            } break;
+            case OP_CMP_2:
+            {
+                size_t reg1=*(memory+pc+1);
+                size_t reg2=*(memory+pc+2);
+				if (regs[reg1]==regs[reg2]) regs[4]=0;
+				else if (regs[reg1]>regs[reg2]) regs[4]=1;
+				else regs[4]=-1;
+                pc+=2;
+            } break;
+			
+			case OP_JMP_1:
+            {
+                short adr=*((short*)(memory+pc+1));
+                pc=adr-1;
+            } break;
+			case OP_JE_1:
+            {
+                short adr=*((short*)(memory+pc+1));
+                if (regs[4]==0) pc=adr-1;
+				else pc+=2;
+            } break;
+			case OP_JL_1:
+            {
+                short adr=*((short*)(memory+pc+1));
+                if (regs[4]==-1) pc=adr-1;
+				else pc+=2;
+            } break;
+			case OP_JG_1:
+            {
+                short adr=*((short*)(memory+pc+1));
+                if (regs[4]==1) pc=adr-1;
+				else pc+=2;
+            } break;
+			case OP_JNE_1:
+            {
+                short adr=*((short*)(memory+pc+1));
+                if (regs[4]!=0) pc=adr-1;
+				else pc+=2;
+            } break;			
             default:
-            cout << "unknown cmd!\n";
+            cout << "unknown cmd:\nPC=" << pc << "\n CODE=" << (int)*(memory+pc);
             exit(0);
         }
         pc++;

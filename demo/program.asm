@@ -1,9 +1,9 @@
 int 13
 mov ah bh
-int 13
-add ah bh
-int 13
-sub ah bh
-mov bh ah
+mov 1 ah
+int 11
+add 1 ah
+cmp ah bh
+jne %10
 int 11
 int 10

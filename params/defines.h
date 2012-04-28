@@ -35,7 +35,21 @@ enum OpType
 	OP_DIV_1=34,
 	OP_DIV_2,
 	OP_DIV_3,
-	OP_DIV_4
+	OP_DIV_4,
+	OP_JMP_1=40,
+	OP_JMP_2,
+	OP_JE_1=42,
+	OP_JE_2,
+	OP_JG_1=44,
+	OP_JG_2,
+	OP_JL_1=46,
+	OP_JL_2,
+	OP_JNE_1=48,
+	OP_JNE_2,
+	OP_CMP_1=50,
+	OP_CMP_2,
+	OP_CMP_3,
+	OP_CMP_4
 };
 
 enum Interrupts {

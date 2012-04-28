@@ -6,48 +6,14 @@
 #include <map>
 #include <vector>
 #include "../params/defines.h"
+#include "misc.h"
 
 using namespace std;
 
 typedef map<string,unsigned> Regs;
 typedef vector<string> Args;
 
-//------------------------------------------------------------------------------------------
-std::string itoa(int num)	// число в строку
-{
-	std::stringstream out;
-	out << num;
-	return out.str();
-}
-//------------------------------------------------------------------------------------------
-int atoi(std::string const &str)  // строку в число
-{
-	std::istringstream stream(str);
-	int number = 0;
-	stream >> number;
-	if (stream.fail()) throw 1;
-	return number;
-}
-//------------------------------------------------------------------------------------------
-void error(int line,string errMsg)
-{
-    cout << "\nERROR! Line " << line << ": " << errMsg << ";\n";
-    exit(19);
-}
-//------------------------------------------------------------------------------------------
-bool isNumber(const string &str)
-{
-    unsigned numcnt=0;
-    if (str[0]=='-') numcnt++;
-    for (auto c:str)
-    {
-        if ((c>='0') && (c<='9'))
-        {
-            numcnt++;
-        }
-    }
-    return (str.length()==numcnt);
-}
+
 //------------------------------------------------------------------------------------------
 bool isRegister(string &str, Regs &regs)
 {
@@ -63,26 +29,7 @@ bool isMemory(string &str)
     }
     return false;
 }
-//------------------------------------------------------------------------------------------
-bool isFloat(const string &str)
-{
-    unsigned numcnt=0;
-    bool isDot=false;
-    if (str[0]=='-') numcnt++;
-    for (auto c:str)
-    {
-        if ((c>='0') && (c<='9'))
-        {
-            numcnt++;
-        }
-        if (c=='.')
-        {
-            numcnt++;
-            isDot=true;
-        }
-    }
-    return ((str.length()==numcnt) && isDot);
-}
+
 //------------------------------------------------------------------------------------------
 void initRegs(Regs &regs)
 {
@@ -333,6 +280,50 @@ void cmdTwoRegs(Args &args,Regs &regs,Regs &regsFloat,int &cur,unsigned char *bc
             } else error(cline,"Syntax error");
 }
 //------------------------------------------------------------------------------------------
+void cmdOneRegs(Args &args,Regs &regs,Regs &regsFloat,int &cur,unsigned char *bcode,int &cline,OpType startCode)
+{
+            if (args.size()!=2) error(cline,"Syntax error"); else
+			if (isNumber(args[1]))
+			{
+				putByte(startCode,bcode,cur);
+				putNum(args[1],bcode,cur);
+			} else
+			if (isRegister(args[1],regs))
+			{
+				putByte(startCode+1,bcode,cur);
+				putReg(args[1],regs,bcode,cur);
+			} else
+			if (isFloat(args[1]))
+			{
+				putByte(startCode+2,bcode,cur);
+				putFloat(args[1],bcode,cur);
+			} else
+			if (isRegister(args[1],regsFloat))
+			{
+				putByte(startCode+3,bcode,cur);
+				putReg(args[1],regsFloat,bcode,cur);
+			} else error(cline,"Syntax error");
+}
+
+//------------------------------------------------------------------------------------------
+void cmdJmp(Args &args,Regs &regs,Regs &regsFloat,int &cur,unsigned char *bcode,int &cline,OpType startCode)
+{
+	if (args.size()!=2) error(cline,"Syntax error"); else
+		if (isMemory(args[1]))
+		{
+			if (isNumber(args[1]))
+			{
+				putByte(startCode,bcode,cur);
+				putNum(args[1],bcode,cur);
+			} else
+			if (isRegister(args[1],regs))
+			{
+				putByte(startCode+1,bcode,cur);
+				putReg(args[1],regs,bcode,cur);
+			} else error(cline,"Syntax error");
+		} else error(cline,"Syntax error");
+}
+//------------------------------------------------------------------------------------------
 int main(int arc, char **argv)
 {
     unsigned char bcode[5000];
@@ -382,9 +373,41 @@ int main(int arc, char **argv)
         if (args[0]=="sub")
         {
             cmdTwoRegs(args,regs,regsFloat,cur,bcode,cline,OP_SUB_1);
-        }
-        else
+        } else
+		if (args[0]=="mul")
+		{
+			cmdOneRegs(args,regs,regsFloat,cur,bcode,cline,OP_MUL_1);
+		} else
+		if (args[0]=="div")
+		{
+			cmdOneRegs(args,regs,regsFloat,cur,bcode,cline,OP_DIV_1);
+		} else
+		if (args[0]=="cmp")
+		{
+			cmdTwoRegs(args,regs,regsFloat,cur,bcode,cline,OP_CMP_1);
+		} else
+        if (args[0]=="jmp")
         {
+			cmdJmp(args,regs,regsFloat,cur,bcode,cline,OP_JMP_1);
+        } else
+        if (args[0]=="je")
+        {
+			cmdJmp(args,regs,regsFloat,cur,bcode,cline,OP_JE_1);
+        } else
+		if (args[0]=="jl")
+        {
+			cmdJmp(args,regs,regsFloat,cur,bcode,cline,OP_JL_1);
+        } else
+		if (args[0]=="jg")
+        {
+			cmdJmp(args,regs,regsFloat,cur,bcode,cline,OP_JG_1);
+        } else
+		if (args[0]=="jne")
+        {
+			cmdJmp(args,regs,regsFloat,cur,bcode,cline,OP_JNE_1);
+        } else
+        {
+			//std::cout << args[0] << ":" << std::endl;
             error(cline,"Unknown command");
         }
     }

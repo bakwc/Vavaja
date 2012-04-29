@@ -5,6 +5,16 @@
 
 typedef std::map<std::string,unsigned> Regs;
 
-bool isRegister(std::string &str, Regs &regs);	// ѕроверка, €вл€етс€ ли регистром
-void initRegs(Regs &regs);						// »нициализирует буквенные имена регистров числами
-void initRegsFloat(Regs &regs);					// »нициализирует буквенные имена регистров числами
+class Registers
+{
+public:
+	Registers();
+	bool isReg(const std::string &str);
+	bool isRegFloat(const std::string &str);
+	unsigned getReg(const std::string &str);
+	unsigned getRegFloat(const std::string &str);
+private:
+	Regs regs,regsFloat;
+	void initRegs();
+	void initRegsFloat();
+};

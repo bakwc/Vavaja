@@ -2,17 +2,25 @@
 
 #include <string>
 #include <iostream>
+#include <fstream>
 #include "regs.h"
 #include "misc.h"
 
-bool isMemory(std::string &str);	// Проверка, является памятью (и удаление % из строки)
-void putByte(const unsigned char byte,unsigned char *addr,int &cur);
-									// Кладёт заданный байт по заданному адресу, увеличивает cur на 1
-void putNum(std::string num,unsigned char *addr,int &cur);
-									// Кладёт заданное целое число по заданному адресу
-void putFloat(std::string num,unsigned char *addr,int &cur);
-									// Кладёт заданное дробное число по заданному адресу
-void putReg(std::string reg,Regs &regs,unsigned char *addr,int &cur);
-									// Кладёт заданнй регистр по заданному адресу
-void printBcode(unsigned char *bcode, size_t len);
-									// Выводит содержимое массива байт-кодов на экран
+class Memory
+{
+public:
+	Memory(Registers *regs);
+	~Memory();
+	bool isMemory(std::string &str);
+	void putByte(const unsigned char byte);
+	void putNum(const std::string num);
+	void putFloat(const std::string num);
+	void putReg(const std::string reg);
+	void putRegFloat(const std::string reg);
+	void print() const;
+	void save(const std::string fname) const;
+private:
+	int cur_;
+	Registers *regs_;
+	unsigned char *memory_;
+};

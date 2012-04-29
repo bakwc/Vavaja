@@ -1,7 +1,21 @@
 #include "memory.h"
 
 //------------------------------------------------------------------------------------------
-bool isMemory(std::string &str)
+Memory::Memory(Registers *regs)
+{
+	regs_=regs;
+	memory_=new unsigned char [5000];
+	cur_=0;
+}
+
+//------------------------------------------------------------------------------------------
+Memory::~Memory()
+{
+	delete [] memory_;
+}
+
+//------------------------------------------------------------------------------------------
+bool Memory::isMemory(std::string &str)
 {
     if (str[0]=='%')
     {
@@ -12,40 +26,53 @@ bool isMemory(std::string &str)
 }
 
 //------------------------------------------------------------------------------------------
-void putByte(const unsigned char byte,unsigned char *addr,int &cur)
+void Memory::putByte(const unsigned char byte)
 {
-    *(addr+cur)=byte;
-    cur++;
+    *(memory_+cur_)=byte;
+    cur_++;
 }
 
 //------------------------------------------------------------------------------------------
-void putNum(std::string num,unsigned char *addr,int &cur)
+void Memory::putNum(const std::string num)
 {
-    *((short*)(addr+cur))=atoi(num);
-    cur+=2;
+    *((short*)(memory_+cur_))=atoi(num);
+    cur_+=2;
+}
+//------------------------------------------------------------------------------------------
+void Memory::putFloat(const std::string num)
+{
+    *((float*)(memory_+cur_))=atoi(num);
+    cur_+=4;
 }
 
 //------------------------------------------------------------------------------------------
-void putFloat(std::string num,unsigned char *addr,int &cur)
+void Memory::putReg(const std::string reg)
 {
-    *((float*)(addr+cur))=atoi(num);
-    cur+=4;
+    *(memory_+cur_)=regs_->getReg(reg);
+    cur_++;
 }
 
 //------------------------------------------------------------------------------------------
-void putReg(std::string reg,Regs &regs,unsigned char *addr,int &cur)
+void Memory::putRegFloat(const std::string reg)
 {
-    *(addr+cur)=regs[reg];
-    cur++;
+    *(memory_+cur_)=regs_->getRegFloat(reg);
+    cur_++;
 }
 
 //------------------------------------------------------------------------------------------
-void printBcode(unsigned char *bcode, size_t len)
+void Memory::print() const
 {
-	for (int i=0;i<len;i++)
+	for (int i=0;i<cur_;i++)
     {
-        int j=(*(char*)(bcode+i));
+        const int j=(*(char*)(memory_+i));
         std::cout << j << " ";
     }
 	std::cout << "\n";
+}
+//------------------------------------------------------------------------------------------
+void Memory::save(const std::string fname) const
+{
+	std::ofstream out(fname,std::ofstream::binary);
+    out.write((char*)memory_,cur_);
+    out.close();
 }

@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 
 #include <vector>
 #include <string>
@@ -13,12 +13,12 @@ typedef std::vector<std::string> Lines;
 class Analyzer
 {
 public:
-	Analyzer(Memory *memory, Registers *regs):memory_(memory),regs_(regs)
-	{
-		curLine_=0;
-	}
+	Analyzer(Memory *memory, Registers *regs):memory_(memory),regs_(regs){curLine_=0;}
+						// РљР»Р°СЃСЃ Р·Р°РІРёСЃРёС‚ РѕС‚ Memory Рё Registers
 	void load(const std::string fname);
+						// Р—Р°РіСЂСѓР·РєР° Р»РёСЃС‚РёРЅРіР° РїСЂРѕРіСЂР°РјРјС‹
 	void process();
+						// РћР±СЂР°Р±РѕС‚РєР° РїСЂРѕРіСЂР°РјРјС‹, СЂРµР·СѓР»СЊС‚Р°С‚ Р±СѓРґРµС‚ РІ РїР°РјСЏС‚Рё
 private:
 	Memory *memory_;
 	Registers *regs_;
@@ -29,12 +29,3 @@ private:
 	void parseOne(Args &args,const OpType startCode);
 	void parseJmp(Args &args,const OpType startCode);
 };
-
-void cmdMov(Args &args,Regs &regs,Regs &regsFloat,int &cur,unsigned char *bcode,int &cline);
-				// Обработка команды mov
-void cmdTwoRegs(Args &args,Regs &regs,Regs &regsFloat,int &cur,unsigned char *bcode,int &cline,OpType startCode);
-				// Обработка команд с двумя аргументами (add, sub, cmp)
-void cmdOneRegs(Args &args,Regs &regs,Regs &regsFloat,int &cur,unsigned char *bcode,int &cline,OpType startCode);
-				// Обработка команд с одним аргументом (mul, div)
-void cmdJmp(Args &args,Regs &regs,Regs &regsFloat,int &cur,unsigned char *bcode,int &cline,OpType startCode);
-				// Обработка команд прыжка (jmp, je, jg, jl, jne)

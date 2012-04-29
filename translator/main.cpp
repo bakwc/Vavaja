@@ -1,8 +1,4 @@
-﻿#include <stdlib.h>
-#include <fstream>
-#include <sstream>
-#include <string>
-#include "../params/defines.h"
+﻿#include "../params/defines.h"
 #include "misc.h"
 #include "regs.h"
 #include "memory.h"
@@ -18,6 +14,5 @@ int main(int argc, char **argv)
 	analyzer.process();
 	memory.print();
 	memory.save("../demo/program.ve");
-
     return 0;
 }

@@ -1,4 +1,4 @@
-#include "analyzer.h"
+﻿#include "analyzer.h"
 
 //------------------------------------------------------------------------------------------
 void Analyzer::load(const std::string fname)

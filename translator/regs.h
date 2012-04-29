@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <string>
 #include <map>
@@ -9,10 +9,10 @@ class Registers
 {
 public:
 	Registers();
-	bool isReg(const std::string &str);
-	bool isRegFloat(const std::string &str);
-	unsigned getReg(const std::string &str);
-	unsigned getRegFloat(const std::string &str);
+	bool isReg(const std::string &str);				// Проверка, является ли целым регистром
+	bool isRegFloat(const std::string &str);		// Проверка, является ли дробным регистром
+	unsigned getReg(const std::string &str);		// Возвращает номер целого регистра
+	unsigned getRegFloat(const std::string &str);	// Возвращает номер дробного регистра
 private:
 	Regs regs,regsFloat;
 	void initRegs();

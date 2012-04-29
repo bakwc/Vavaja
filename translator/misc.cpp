@@ -29,9 +29,9 @@ bool isNumber(const std::string &str)
 {
     unsigned numcnt=0;
     if (str[0]=='-') numcnt++;
-    for (auto c:str)
+    for (auto c=str.begin();c<str.end();c++)
     {
-        if ((c>='0') && (c<='9'))
+        if (((*c)>='0') && ((*c)<='9'))
         {
             numcnt++;
         }
@@ -44,13 +44,13 @@ bool isFloat(const std::string &str)
     unsigned numcnt=0;
     bool isDot=false;
     if (str[0]=='-') numcnt++;
-    for (auto c:str)
+    for (auto c=str.begin();c<str.end();c++)
     {
-        if ((c>='0') && (c<='9'))
+        if (((*c)>='0') && ((*c)<='9'))
         {
             numcnt++;
         }
-        if (c=='.')
+        if ((*c)=='.')
         {
             numcnt++;
             isDot=true;

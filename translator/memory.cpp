@@ -38,6 +38,12 @@ void Memory::putNum(const std::string num)
     *((short*)(memory_+cur_))=atoi(num);
     cur_+=2;
 }
+
+void Memory::putTwoBytes(unsigned char addr, short num)
+{
+	*((short*)(memory_+addr))=num;
+}
+
 //------------------------------------------------------------------------------------------
 void Memory::putFloat(const std::string num)
 {
@@ -69,10 +75,17 @@ void Memory::print() const
     }
 	std::cout << "\n";
 }
+
 //------------------------------------------------------------------------------------------
 void Memory::save(const std::string fname) const
 {
 	std::ofstream out(fname,std::ofstream::binary);
     out.write((char*)memory_,cur_);
     out.close();
+}
+
+//-------------------------------------------------------------------
+unsigned char Memory::getCurrent() const
+{
+	return cur_;
 }

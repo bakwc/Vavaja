@@ -22,6 +22,11 @@ void Analyzer::process()
         Args args;
         split((*i),args);
         curLine_++;
+		
+		if (labels_->isLabel(args[0]))
+		{
+			labels_->addLabel(args[0],memory_->getCurrent());
+		} else
         if (args[0]=="pass")
         {
 			memory_->putByte(OP_PASS);
@@ -45,60 +50,51 @@ void Analyzer::process()
         else
         if (args[0]=="add")
         {
-			//cmdTwoRegs(args,regs,regsFloat,cur,bcode,cline,OP_ADD_1);
 			parseTwo(args,OP_ADD_1);
         }
         else
         if (args[0]=="sub")
         {
-            //cmdTwoRegs(args,regs,regsFloat,cur,bcode,cline,OP_SUB_1);
 			parseTwo(args,OP_SUB_1);
         } else
 		if (args[0]=="mul")
 		{
-			//cmdOneRegs(args,regs,regsFloat,cur,bcode,cline,OP_MUL_1);
 			parseOne(args,OP_MUL_1);
 		} else
 		if (args[0]=="div")
 		{
-			//cmdOneRegs(args,regs,regsFloat,cur,bcode,cline,OP_DIV_1);
 			parseOne(args,OP_DIV_1);
 		} else
 		if (args[0]=="cmp")
 		{
-			//cmdTwoRegs(args,regs,regsFloat,cur,bcode,cline,OP_CMP_1);
 			parseTwo(args,OP_CMP_1);
 		} else
         if (args[0]=="jmp")
         {
-			//cmdJmp(args,regs,regsFloat,cur,bcode,cline,OP_JMP_1);
 			parseJmp(args,OP_JMP_1);
         } else
         if (args[0]=="je")
         {
-			//cmdJmp(args,regs,regsFloat,cur,bcode,cline,OP_JE_1);
 			parseJmp(args,OP_JE_1);
         } else
 		if (args[0]=="jl")
         {
-			//cmdJmp(args,regs,regsFloat,cur,bcode,cline,OP_JL_1);
 			parseJmp(args,OP_JL_1);
         } else
 		if (args[0]=="jg")
         {
-			//cmdJmp(args,regs,regsFloat,cur,bcode,cline,OP_JG_1);
 			parseJmp(args,OP_JG_1);
         } else
 		if (args[0]=="jne")
         {
-			//cmdJmp(args,regs,regsFloat,cur,bcode,cline,OP_JNE_1);
 			parseJmp(args,OP_JNE_1);
         } else
         {
-			//std::cout << args[0] << ":" << std::endl;
             error(curLine_,"Unknown command");
         }
 	}
+	memory_->print();
+	labels_->setLabels();
 }
 
 //------------------------------------------------------------------------------------------
@@ -323,6 +319,13 @@ void Analyzer::parseJmp(Args &args,const OpType startCode)
 			{
 				memory_->putByte(startCode+1);
 				memory_->putReg(args[1]);
-			} else error(curLine_,"Syntax error");
-		} else error(curLine_,"Syntax error");
+			} else
+			error(curLine_,"Syntax error");
+		} else 
+		{
+			labels_->addAddr(memory_->getCurrent()+1,args[1]);
+			memory_->putByte(startCode);
+			memory_->putByte(0);
+			memory_->putByte(0);
+		}
 }

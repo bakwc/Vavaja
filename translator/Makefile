@@ -1,5 +1,5 @@
 main: main.o misc.o regs.o memory.o parsecmd.o
-	g++ main.o misc.o regs.o memory.o parsecmd.o -o translator.exe
+	g++ main.o misc.o regs.o memory.o parsecmd.o -o translator
 main.o: main.cpp ../params/defines.h misc.h
 	g++ -std=c++0x main.cpp -c -o main.o
 misc.o: misc.cpp misc.h
@@ -13,6 +13,7 @@ parsecmd.o: parsecmd.cpp parsecmd.h misc.h regs.h ../params/defines.h memory.h
 clean:
 	rm -rf main.o
 	rm -rf translator.exe
+	rm -rf translator
 	rm -rf misc.o
 	rm -rf regs.o
 	rm -rf memory.o

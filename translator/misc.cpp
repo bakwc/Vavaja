@@ -58,3 +58,18 @@ bool isFloat(const std::string &str)
     }
     return ((str.length()==numcnt) && isDot);
 }
+
+//------------------------------------------------------------------------------------------
+void split(std::string &str,Args &args)
+{
+    int n=str.find(" ");
+    std::string tmp;
+    while (n>=0)
+    {
+        tmp=str.substr(0,n);
+        str.erase(0,n+1);
+        args.push_back(tmp);
+        n=str.find(" ");
+    }
+    args.push_back(str);
+}

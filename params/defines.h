@@ -1,3 +1,5 @@
+#pragma once
+
 enum OpType
 {
 	OP_MOV_1=1,

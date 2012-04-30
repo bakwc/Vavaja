@@ -7,9 +7,15 @@
 #include "regs.h"
 #include "memory.h"
 #include "labels.h"
-#include "../params/defines.h"
 
 typedef std::vector<std::string> Lines;
+
+struct SyntaxRecord
+{
+	unsigned char code;
+	std::string cmd;
+	Lines args;
+};
 
 class Analyzer
 {
@@ -18,6 +24,7 @@ public:
 						// Класс зависит от Memory и Registers
 	void load(const std::string fname);
 						// Загрузка листинга программы
+	void loadSyntax(const std::string fname);
 	void process();
 						// Обработка программы, результат будет в памяти
 private:
@@ -25,9 +32,6 @@ private:
 	Registers *regs_;
 	Label *labels_;
 	Lines listing_;
+	std::vector<SyntaxRecord> syntax_;
 	int curLine_;
-	void parseMov(Args &args);
-	void parseTwo(Args &args,const OpType startCode);
-	void parseOne(Args &args,const OpType startCode);
-	void parseJmp(Args &args,const OpType startCode);
 };

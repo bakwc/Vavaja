@@ -1,5 +1,4 @@
-﻿#include "../params/defines.h"
-#include "misc.h"
+﻿#include "misc.h"
 #include "regs.h"
 #include "memory.h"
 #include "analyzer.h"
@@ -12,6 +11,7 @@ int main(int argc, char **argv)
 	Memory memory(&registers);
 	Label label(&memory);
 	Analyzer analyzer(&memory,&registers,&label);
+	analyzer.loadSyntax("../params/opcodes.cfg");
 	analyzer.load("../demo/program.asm");
 	analyzer.process();
 	memory.print();

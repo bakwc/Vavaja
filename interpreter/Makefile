@@ -1,6 +1,6 @@
 main: main.o
 	g++ main.o -o interpreter
-main.o: main.cpp ../params/defines.h
+main.o: main.cpp defines.h
 	g++ -std=c++0x main.cpp -c -o main.o
 clean:
 	rm -rf main.o

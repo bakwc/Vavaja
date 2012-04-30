@@ -60,16 +60,16 @@ bool isFloat(const std::string &str)
 }
 
 //------------------------------------------------------------------------------------------
-void split(std::string &str,Args &args)
+void split(std::string &str,Args &args,const char letter)
 {
-    int n=str.find(" ");
+    int n=str.find(letter);
     std::string tmp;
     while (n>=0)
     {
         tmp=str.substr(0,n);
         str.erase(0,n+1);
         args.push_back(tmp);
-        n=str.find(" ");
+        n=str.find(letter);
     }
     args.push_back(str);
 }

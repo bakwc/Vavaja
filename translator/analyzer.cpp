@@ -49,7 +49,46 @@ void Analyzer::process()
         curLine_++;
 		
 		bool matched=false;
-		
+		if (args[0][0]=='.')
+		{
+			if (args[0]==".byte")
+			{
+				memory_->putByte(atoi(args[1]));
+				matched=true;
+			} else
+			if (args[0]==".short")
+			{
+				memory_->putNum(args[1]);
+				matched=true;
+			} else
+			if (args[0]==".float")
+			{
+				memory_->putFloat(args[1]);
+				matched=true;
+			} else
+			if (args[0]==".space")
+			{
+				int count=atoi(args[1]);
+				for (auto i=0;i<count;++i)
+				{
+					memory_->putByte(0);
+				}
+				matched=true;
+			} else
+			if (args[0]==".string")
+			{
+				std::string tmp;
+				for (auto i=(args.begin()+1);i<args.end();i++)
+				{
+					tmp+=(*i)+" ";
+				}
+				for (auto i=0;i<tmp.length()-1;i++)
+				{
+					memory_->putByte(tmp[i]);
+				}
+				matched=true;
+			}
+		} else
 		if (labels_->isLabel(args[0]))
 		{
 			labels_->addLabel(args[0],memory_->getCurrent());

@@ -9,12 +9,12 @@ class Label
 {
 public:
 	Label(Memory *memory):memory_(memory) {}
-	bool isLabel(const std::string & str);
-	void addLabel(const std::string & str, unsigned char addr);
-	void addAddr(unsigned char addr, std::string & lbl);
-	void setLabels();
+	bool isLabel(const std::string & str);		// проверка, является ли команда меткой
+	void addLabel(const std::string & str, unsigned char addr);	// добавление метки и адреса на котором она стоит
+	void addAddr(unsigned char addr, const std::string & lbl);	// добавление адреса, на который надо подставить адрес метки
+	void setLabels();										// расстановка меток по нужным адресам
 private:
 	std::map<std::string,unsigned char> labels1_;
-	std::map<unsigned char, std::string> labels2_; 
+	std::map<unsigned char, std::string> labels2_;
 	Memory *memory_;
 };

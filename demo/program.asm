@@ -1,11 +1,7 @@
-mov start ah
-int 11
-int 13
-mov ah ch
-mov 0 ah
-start:
-add 1 ah
-int 11
-cmp ah ch
-jne %start
+mov hello ah
+int 18
+int 18
+int 18
 int 10
+hello:
+.string Hello, world

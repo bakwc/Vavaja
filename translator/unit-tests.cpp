@@ -4,6 +4,7 @@
 #include "misc.h"
 #include "regs.h"
 #include "memory.h"
+#include "labels.h"
 
 //-------------------------------------------------------------------------
 int cmpStrs(const std::string &str1,const std::string &str2)
@@ -446,8 +447,31 @@ int testMemoryComplex()
 		count+=cmpInt(count2,5);
 	}
 	
+	{
+		int count2=0;
+		Registers regs;
+		Memory mem(&regs);
+		unsigned char memory[50];
+		std::cout << " Test 5:\t";
+		mem.putNum("25");
+		mem.putNum("-115");
+		mem.putTwoBytes(0,21);
+		mem.putTwoBytes(2,-34);
+		mem.save("memory.tst");
+		std::ifstream in("memory.tst",std::ios::binary);
+		in.seekg (0, std::ios::end);
+		int length = in.tellg();
+		in.seekg (0, std::ios::beg);
+		in.read((char*)memory,length);
+		in.close();
+		if (length==4) count2++;
+		if (*((short*)memory)==21) count2++;
+		if (*((short*)(memory+2))==-34) count2++;
+		count+=cmpInt(count2,3);
+	}
+	
 	std::cout << "\n";
-	return (count==4);
+	return (count==5);
 }
 
 //-------------------------------------------------------------------------
@@ -464,14 +488,86 @@ int testMemory()
 
 //-------------------------------------------------------------------------
 //-------------------------------------------------------------------------
+int testIsLabel()
+{
+	int count=0;
+	std::cout << "Testing IsLabel: \n";
+	Registers regs;
+	Memory mem(&regs);
+	Label lbl(&mem);
+	std::cout << " Test 1:\t";
+	count+=cmpBool(lbl.isLabel("somelbl:"),true);
+	std::cout << " Test 2:\t";
+	count+=cmpBool(lbl.isLabel("label"),false);
+	std::cout << " Test 3:\t";
+	count+=cmpBool(lbl.isLabel(":"),false);
+
+	std::cout << "\n";
+	return (count==3);
+}
+
+//-------------------------------------------------------------------------
+int testLabelComplex()
+{
+	int count=0,count2=0;
+	std::cout << "Overall label tests: \n";
+	Registers regs;
+	Memory mem(&regs);
+	Label lbl(&mem);
+	unsigned char memory[50];
+	
+	mem.putNum("-1");
+	mem.putNum("-1");
+	mem.putNum("-1");
+	mem.putNum("-1");
+	
+	std::cout << " Test 1:\t";
+	lbl.addLabel("label1:",2);
+	lbl.addLabel("smt:",6);
+	lbl.addAddr(0,"smt");
+	lbl.addAddr(4,"label1");
+	lbl.setLabels();
+	
+	mem.save("memory.tst");
+	std::ifstream in("memory.tst",std::ios::binary);
+	in.seekg (0, std::ios::end);
+	int length = in.tellg();
+	in.seekg (0, std::ios::beg);
+	in.read((char*)memory,length);
+	in.close();
+
+	if (*((short*)memory)==6) count2++;
+	if (*((short*)(memory+4))==2) count2++;
+	count+=cmpInt(count2,2);
+
+	std::cout << "\n";
+	return (count==1);
+}
+
+//-------------------------------------------------------------------------
+int testLabels()
+{
+	int count=0;
+	count+=testIsLabel();
+	count+=testLabelComplex();
+	
+	std::cout << "\n labels tested:\t";
+	cmpBool((count==2),true);
+	std::cout << "\n";
+	return (count==2);
+}
+
+//-------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 int main()
 {
 	int count=0;
 	count+=testMisc();
 	count+=testRegs();
 	count+=testMemory();
+	count+=testLabels();
 	std::cout << "\n Result:\t";
-	cmpBool((count==3),true);
+	cmpBool((count==4),true);
 	std::cout << "\n";
 	return 0;
 }

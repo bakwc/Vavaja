@@ -38,6 +38,14 @@ void interrupt(short intId,unsigned char *memory,short *regs, float *regsFloat)
         case INT_INPUT_FLOAT:
         cin >> regsFloat[0];
         break;
+		case INT_OUTPUT_STR_N:
+		{
+			char *str;
+			str=(char*)(memory+(size_t)regs[0]);
+			//str=(char*)((size_t)regs[0]);
+			std::cout << str << "\n";
+		}
+        break;
     }
 }
 
@@ -76,7 +84,6 @@ int main()
 		cout << i->first << ":" << (int)i->second << "\n";
 	}
 	*/
-
     ifstream in("../demo/program.ve",ios::binary);
     in.seekg (0, ios::end);
     int length = in.tellg();
@@ -86,10 +93,12 @@ int main()
     sp=length+1;    // стек начинается сразу после кода
     pc=0;           // - текущая команда
 
-    //for (int i=0;i<length;i++)
-    //    cout << (int)memory[i] << " ";
-	//cout << std::endl;
-
+	/*
+    for (int i=0;i<length;i++)
+        cout << (int)memory[i] << " ";
+	cout << std::endl;
+	*/
+	
     while (true)
     {
 		//cout << "\n\nPC: " << pc << "\n";
@@ -152,7 +161,7 @@ int main()
 		{
 			short mem=*((short*)(memory+pc+1));
 			size_t reg=*(memory+pc+3);
-			regs[reg]=*((short*)memory+mem);
+			regs[reg]=*((short*)(memory+mem));
 			pc+=3;
 		} else
 		if (memory[pc]==syntax["mov:regmem:reg"])
@@ -160,7 +169,7 @@ int main()
 			size_t memreg=*(memory+pc+1);
 			size_t reg=*(memory+pc+2);
 			short mem=regs[memreg];
-			regs[reg]=*((short*)memory+mem);
+			regs[reg]=*((short*)(memory+mem));
 			pc+=2;
 		} else
 		if (memory[pc]==syntax["add:num:reg"])
@@ -220,7 +229,7 @@ int main()
 		if (memory[pc]==syntax["push:num"])
 		{
 			short num=*((short*)(memory+pc+1));
-			*((short*)memory+sp)=num;
+			*((short*)(memory+sp))=num;
 			sp+=2;
 			pc+=2;
 		} else
@@ -228,7 +237,7 @@ int main()
 		{
 			size_t reg1=*(memory+pc+1);
 			short num=regs[reg1];
-			*((short*)memory+sp)=num;
+			*((short*)(memory+sp))=num;
 			sp+=2;
 			pc+=1;
 		} else
@@ -236,7 +245,7 @@ int main()
 		{
 			sp-=2;
 			size_t reg1=*(memory+pc+1);
-			short num=*((short*)memory+sp);
+			short num=*((short*)(memory+sp));
 			regs[reg1]=num;
 			pc+=1;
 		} else
@@ -267,7 +276,7 @@ int main()
 		{
 			short adr=*((short*)(memory+pc+1));
 			short num=pc+3;
-			*((short*)memory+sp)=num;
+			*((short*)(memory+sp))=num;
 			sp+=2;
             pc=adr-1;
         } else

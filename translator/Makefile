@@ -1,7 +1,11 @@
 main: main.o misc.o regs.o memory.o analyzer.o labels.o
 	g++ main.o misc.o regs.o memory.o analyzer.o labels.o -o translator
-main.o: main.cpp misc.h
+tests: unit-tests.o misc.o regs.o analyzer.o labels.o memory.o
+	g++ unit-tests.o misc.o regs.o memory.o analyzer.o labels.o -o unit-tests
+main.o: main.cpp misc.h memory.h regs.h labels.h regs.h
 	g++ -std=c++0x main.cpp -c -o main.o
+unit-tests.o: unit-tests.cpp misc.h
+	g++ -std=c++0x unit-tests.cpp -c -o unit-tests.o
 misc.o: misc.cpp misc.h
 	g++ -std=c++0x misc.cpp -c -o misc.o
 regs.o: regs.cpp misc.h
@@ -21,3 +25,7 @@ clean:
 	rm -rf memory.o
 	rm -rf analyzer.o
 	rm -rf labels.o
+	rm -rf unit-tests.o
+	rm -rf unit-tests
+	rm -rf unit-tests.exe
+	rm -rf memory.tst

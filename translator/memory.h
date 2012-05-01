@@ -19,8 +19,8 @@ public:
 	void putRegFloat(const std::string reg);	// Кладёт в память дробный регистр
 	void print() const;							// Выводит содержимое памяти на экран
 	void save(const std::string fname) const;	// Сохраняет память в двоичный файл
-	unsigned char getCurrent() const;
-	void putTwoBytes(unsigned char addr, short num);
+	unsigned char getCurrent() const;			// Возвращает текущий размер памяти
+	void putTwoBytes(unsigned char addr, short num); // Кладёт память двухбайтное целое число
 private:
 	int cur_;
 	Registers *regs_;

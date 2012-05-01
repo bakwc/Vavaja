@@ -17,6 +17,7 @@ Memory::~Memory()
 //------------------------------------------------------------------------------------------
 bool Memory::isMemory(std::string &str)
 {
+	if (str.length()==1) return false;
     if (str[0]=='%')
     {
         str.erase(0,1);
@@ -47,7 +48,7 @@ void Memory::putTwoBytes(unsigned char addr, short num)
 //------------------------------------------------------------------------------------------
 void Memory::putFloat(const std::string num)
 {
-    *((float*)(memory_+cur_))=atoi(num);
+    *((float*)(memory_+cur_))=atof(num);
     cur_+=4;
 }
 

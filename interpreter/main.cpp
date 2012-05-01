@@ -124,7 +124,7 @@ int main()
 		{
 			short num=*((short*)(memory+pc+1));
 			short mem=*((short*)(memory+pc+3));
-			*((short*)memory+mem)=num;
+			*((short*)(memory+mem))=num;
 			pc+=4;
 		} else
 		if (memory[pc]==syntax["mov:num:regmem"])
@@ -132,7 +132,7 @@ int main()
 			short num=*((short*)(memory+pc+1));
 			size_t reg=*(memory+pc+3);
 			short mem=regs[reg];
-			*((short*)memory+mem)=num;
+			*((short*)(memory+mem))=num;
 			pc+=3;			
 		} else
 		if (memory[pc]==syntax["mov:reg:reg"])
@@ -146,7 +146,7 @@ int main()
 		{
 			size_t reg=*(memory+pc+1);
 			short mem=*((short*)(memory+pc+2));
-			*((short*)memory+mem)=regs[reg];
+			*((short*)(memory+mem))=regs[reg];
 			pc+=3;
 		} else
 		if (memory[pc]==syntax["mov:reg:regmem"])
@@ -154,7 +154,7 @@ int main()
 			size_t reg1=*(memory+pc+1);
 			size_t reg2=*(memory+pc+2);
 			short mem=regs[reg2];
-			*((short*)memory+mem)=regs[reg1];
+			*((short*)(memory+mem))=regs[reg1];
 			pc+=2;
 		} else
 		if (memory[pc]==syntax["mov:mem:reg"])

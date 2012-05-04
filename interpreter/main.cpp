@@ -309,7 +309,7 @@ int main()
 			*((short*)(memory+sp))=num;
 			sp+=2;
             pc=adr-1;
-        } else
+        	} else
 		if (memory[pc]==syntax["ret"])
 		{
 			sp-=2;
@@ -341,6 +341,55 @@ int main()
 			if (regs[4]!=0) pc=adr-1;
 			else pc+=2;
 		} else
+		if (memory[pc]==syntax["and:num:reg"])
+		{
+			short num=*((short*)(memory+pc+1));
+			size_t reg=*(memory+pc+3);
+			regs[reg]&=num;
+			pc+=3;
+		} else
+		if (memory[pc]==syntax["and:reg:reg"])
+		{
+			size_t reg1=*(memory+pc+1);
+			size_t reg2=*(memory+pc+2);
+			regs[reg2]&=regs[reg1];
+			pc+=2;
+		} else
+		if (memory[pc]==syntax["or:num:reg"])
+		{
+			short num=*((short*)(memory+pc+1));
+			size_t reg=*(memory+pc+3);
+			regs[reg]|=num;
+			pc+=3;
+		} else
+		if (memory[pc]==syntax["or:reg:reg"])
+		{
+			size_t reg1=*(memory+pc+1);
+			size_t reg2=*(memory+pc+2);
+			regs[reg2]|=regs[reg1];
+			pc+=2;
+		} else
+		if (memory[pc]==syntax["xor:num:reg"])
+		{
+			short num=*((short*)(memory+pc+1));
+			size_t reg=*(memory+pc+3);
+			regs[reg]^=num;
+			pc+=3;
+		} else
+		if (memory[pc]==syntax["xor:reg:reg"])
+		{
+			size_t reg1=*(memory+pc+1);
+			size_t reg2=*(memory+pc+2);
+			regs[reg2]^=regs[reg1];
+			pc+=2;
+		} else
+		if (memory[pc]==syntax["not:reg"])
+		{
+			size_t reg=*(memory+pc+1);
+			regs[reg]= ~regs[reg];
+			pc+=1;
+		}		
+		else
 		{
 			cout << "unknown cmd:\nPC=" << pc << "\n CODE=" << (int)*(memory+pc);
 			exit(0);

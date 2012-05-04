@@ -27,10 +27,10 @@ void interrupt(short intId,unsigned char *memory,short *regs, float *regsFloat)
         exit(0);
         break;
         case INT_OUTPUT_INT:
-        cout << regs[0] << endl;
+        cout << regs[0];
         break;
         case INT_OUTPUT_FLOAT:
-        cout << regsFloat[0] << endl;
+        cout << regsFloat[0];
         break;
         case  INT_INPUT_INT:
         cin >> regs[0];
@@ -42,8 +42,35 @@ void interrupt(short intId,unsigned char *memory,short *regs, float *regsFloat)
 		{
 			char *str;
 			str=(char*)(memory+(size_t)regs[0]);
-			//str=(char*)((size_t)regs[0]);
 			std::cout << str << "\n";
+		}
+        break;
+		case INT_OUTPUT_STR:
+		{
+			char *str;
+			str=(char*)(memory+(size_t)regs[0]);
+			std::cout << str;
+		}
+        break;
+		case INT_DEBUG:
+		{
+			std::ofstream out("debug.txt");
+			out << "AH: " << regs[0] << std::endl;
+			out << "BH: " << regs[1] << std::endl;
+			out << "CH: " << regs[2] << std::endl;
+			out << "DH: " << regs[3] << std::endl;
+			out << "EH: " << regs[4] << std::endl;
+			out << "SP: " << regs[5] << std::endl;
+			out << "PC: " << regs[6] << std::endl;
+			out << "\nMemory:\n";
+			for (int i=0;i<300;i++)
+			{
+				if ((i%16)==0)
+					out << "\n" << i << ": ";
+				out << (int)memory[i] << "\t";
+			}
+			out << std::endl;
+			out.close();
 		}
         break;
     }
@@ -153,7 +180,9 @@ int main()
 		{
 			size_t reg1=*(memory+pc+1);
 			size_t reg2=*(memory+pc+2);
+			//std::cout << "reg: " << reg2 << "\n";
 			short mem=regs[reg2];
+			//std::cout << "addr: " << mem << "\n";
 			*((short*)(memory+mem))=regs[reg1];
 			pc+=2;
 		} else
@@ -267,15 +296,16 @@ int main()
 			else regs[4]=-1;
 			pc+=2;
 		} else
-		if (memory[pc]==syntax["jmp:mem"])
+		if (memory[pc]==syntax["jmp:num"])
 		{
 			short adr=*((short*)(memory+pc+1));
             pc=adr-1;
         } else
-		if (memory[pc]==syntax["call:mem"])
+		if (memory[pc]==syntax["call:num"])
 		{
 			short adr=*((short*)(memory+pc+1));
 			short num=pc+3;
+			//std::cout << "Return addr: " << num << "\n";
 			*((short*)(memory+sp))=num;
 			sp+=2;
             pc=adr-1;
@@ -283,28 +313,29 @@ int main()
 		if (memory[pc]==syntax["ret"])
 		{
 			sp-=2;
-			short num=*((short*)memory+sp);
+			short num=*((short*)(memory+sp));
+			//std::cout << "Jmp to: " << num << "\n";
 			pc=num-1;
 		} else
-		if (memory[pc]==syntax["je:mem"])
+		if (memory[pc]==syntax["je:num"])
 		{
 			short adr=*((short*)(memory+pc+1));
 			if (regs[4]==0) pc=adr-1;
 			else pc+=2;
 		} else
-		if (memory[pc]==syntax["jl:mem"])
+		if (memory[pc]==syntax["jl:num"])
 		{
 			short adr=*((short*)(memory+pc+1));
 			if (regs[4]==-1) pc=adr-1;
 			else pc+=2;
 		} else
-		if (memory[pc]==syntax["jh:mem"])
+		if (memory[pc]==syntax["jh:num"])
 		{
 			short adr=*((short*)(memory+pc+1));
 			if (regs[4]==1) pc=adr-1;
 			else pc+=2;
 		} else
-		if (memory[pc]==syntax["jne:mem"])
+		if (memory[pc]==syntax["jne:num"])
 		{
 			short adr=*((short*)(memory+pc+1));
 			if (regs[4]!=0) pc=adr-1;

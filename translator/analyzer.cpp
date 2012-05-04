@@ -86,6 +86,20 @@ void Analyzer::process()
 				{
 					memory_->putByte(tmp[i]);
 				}
+				memory_->putByte(0);
+				matched=true;
+			}
+			if (args[0]==".ascii")
+			{
+				std::string tmp;
+				for (auto i=(args.begin()+1);i<args.end();i++)
+				{
+					tmp+=(*i)+" ";
+				}
+				for (auto i=0;i<tmp.length()-1;i++)
+				{
+					memory_->putByte(tmp[i]);
+				}
 				matched=true;
 			}
 		} else
@@ -127,9 +141,9 @@ void Analyzer::process()
 					} else
 					if ( ( ((*k)=="mem") || ((*k)=="regmem") ) && (args[currArg][0]=='%') )
 					{
-						//std::cout << "Memory: " << args[currArg] << "\n";
 						std::string tmpStr=args[currArg];
 						tmpStr.erase(0,1);
+						//std::cout << "T: " << tmpStr << "\n";
 						if ( ((*k)=="mem") && isNumber(tmpStr))
 						{
 							mCount++;
@@ -140,7 +154,7 @@ void Analyzer::process()
 							mCount++;
 							continue;
 						} else
-						if ((*k)=="mem")
+						if (((*k)=="mem") && (regs_->isReg(tmpStr)!=true))
 						{
 							mCount++;
 							continue;
@@ -160,7 +174,6 @@ void Analyzer::process()
 				
 				if (mCount==(args.size()-1))
 				{
-					//std::cout << j->cmd << ": " << mCount << "\n";
 					matched=true;
 					
 					memory_->putByte(j->code);
@@ -207,7 +220,6 @@ void Analyzer::process()
 							if ((*k)=="mem")
 							{
 								labels_->addAddr(memory_->getCurrent(),tmpStr);
-								//std::cout << "Added: " << memory_->getCurrent() << " - " << tmpStr << "\n";
 								memory_->putByte(0);
 								memory_->putByte(0);
 								continue;
@@ -221,7 +233,6 @@ void Analyzer::process()
 							(args[currArg][0]!='%'))
 						{
 							labels_->addAddr(memory_->getCurrent(),args[currArg]);
-							//std::cout << "Added: " << memory_->getCurrent() << " - " << args[currArg] << "\n";
 							memory_->putByte(0);
 							memory_->putByte(0);
 							continue;
@@ -238,4 +249,3 @@ void Analyzer::process()
 	memory_->print();
 	labels_->setLabels();
 }
-

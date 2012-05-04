@@ -6,3 +6,4 @@ clean:
 	rm -rf main.o
 	rm -rf interpreter
 	rm -rf interpreter.exe
+	rm -rf debug.txt

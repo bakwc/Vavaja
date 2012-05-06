@@ -193,6 +193,20 @@ int main()
 			regs[reg]=*((short*)(memory+mem));
 			pc+=3;
 		} else
+		if (memory[pc]==syntax["mov:reg:regfloat"])
+		{
+			size_t reg1=*(memory+pc+1);
+			size_t reg2=*(memory+pc+2);
+			regsFloat[reg2]=regs[reg1];
+			pc+=2;
+		} else
+		if (memory[pc]==syntax["mov:regfloat:reg"])
+		{
+			size_t reg1=*(memory+pc+1);
+			size_t reg2=*(memory+pc+2);
+			regs[reg2]=regsFloat[reg1];
+			pc+=2;
+		} else
 		if (memory[pc]==syntax["mov:regmem:reg"])
 		{
 			size_t memreg=*(memory+pc+1);
@@ -253,6 +267,20 @@ int main()
 			size_t reg1=*(memory+pc+1);
 			regs[4]=regs[0]%regs[reg1];
 			regs[0]/=regs[reg1];
+			pc+=1;
+		} else
+		if (memory[pc]==syntax["div:float"])
+		{
+			float num=*((short*)(memory+pc+1));
+			//regs[4]=regs[0]%num;
+			regsFloat[0]/=num;
+			pc+=4;
+		} else
+		if (memory[pc]==syntax["div:regfloat"])
+		{
+			size_t reg1=*(memory+pc+1);
+			//regs[4]=regs[0]%regs[reg1];
+			regsFloat[0]/=regsFloat[reg1];
 			pc+=1;
 		} else
 		if (memory[pc]==syntax["push:num"])

@@ -3,14 +3,30 @@
 //------------------------------------------------------------------------------------------
 void Analyzer::load(const std::string fname)
 {
-	std::ifstream source(fname);
+	std::ifstream source(fname);	
+	if (!source)
+	{
+		error(0,"Include file not exists");
+	}
+	
 	std::string tmp;
 	while (!source.eof())
 	{
 		getline(source,tmp);
 		if (tmp.length()!=0)
-			listing_.push_back(tmp);
+		{
+			Args args;
+			split(tmp,args);
+			if (args[0]=="#include")
+			{
+				load(args[1]);
+			} else
+			{
+				listing_.push_back(tmp);
+			}
+		}
 	}
+	
 	source.close();
 }
 
@@ -131,11 +147,13 @@ void Analyzer::process()
 					} else
 					if ( ((*k)=="reg") && regs_->isReg(args[currArg]))
 					{
+						//std::cout << "reg matched!\n";
 						mCount++;
 						continue;
 					} else
 					if ( ((*k)=="regfloat") && regs_->isRegFloat(args[currArg]))
 					{
+						//std::cout << "regfloat matched!\n";
 						mCount++;
 						continue;
 					} else

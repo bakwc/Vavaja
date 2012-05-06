@@ -1,5 +1,5 @@
 main: main.o misc.o regs.o memory.o analyzer.o labels.o
-	g++ main.o misc.o regs.o memory.o analyzer.o labels.o -o translator
+	g++ main.o misc.o regs.o memory.o analyzer.o labels.o -o vavajatr
 tests: unit-tests.o misc.o regs.o analyzer.o labels.o memory.o
 	g++ unit-tests.o misc.o regs.o memory.o analyzer.o labels.o -o unit-tests
 main.o: main.cpp misc.h memory.h regs.h labels.h regs.h
@@ -18,8 +18,8 @@ labels.o: labels.h labels.cpp
 	g++ -std=c++0x labels.cpp -c -o labels.o
 clean:
 	rm -rf main.o
-	rm -rf translator.exe
-	rm -rf translator
+	rm -rf vavajatr.exe
+	rm -rf vavajatr
 	rm -rf misc.o
 	rm -rf regs.o
 	rm -rf memory.o

@@ -77,8 +77,15 @@ void interrupt(short intId,unsigned char *memory,short *regs, float *regsFloat)
 }
 
 
-int main()
+int main(int argc, char **argv)
 {
+
+	if (argc<2) 
+		{
+		std::cout << "usage:\n    vavaga filename.asm\n\n";
+		exit(1);
+		}
+
     unsigned char memory[15000]; // общая память
     short regs[8];
     float regsFloat[8];
@@ -111,7 +118,13 @@ int main()
 		cout << i->first << ":" << (int)i->second << "\n";
 	}
 	*/
-    ifstream in("../demo/program.ve",ios::binary);
+    ifstream in(argv[1],ios::binary);
+	if (!in)
+	{
+		cout << "error reading file\n";
+		exit(0);
+	}
+	
     in.seekg (0, ios::end);
     int length = in.tellg();
     in.seekg (0, ios::beg);
@@ -207,6 +220,13 @@ int main()
 			regs[reg2]=regsFloat[reg1];
 			pc+=2;
 		} else
+		if (memory[pc]==syntax["mov:regfloat:regfloat"])
+		{
+			size_t reg1=*(memory+pc+1);
+			size_t reg2=*(memory+pc+2);
+			regsFloat[reg2]=regsFloat[reg1];
+			pc+=2;
+		} else
 		if (memory[pc]==syntax["mov:regmem:reg"])
 		{
 			size_t memreg=*(memory+pc+1);
@@ -229,6 +249,20 @@ int main()
 			regs[reg2]+=regs[reg1];
 			pc+=2;
 		} else
+		if (memory[pc]==syntax["add:float:regfloat"])
+		{
+			float num=*((short*)(memory+pc+1));
+			size_t reg=*(memory+pc+5);
+			regsFloat[reg]+=num;
+			pc+=5;
+		} else
+		if (memory[pc]==syntax["add:regfloat:regfloat"])
+		{
+			size_t reg1=*(memory+pc+1);
+			size_t reg2=*(memory+pc+2);
+			regsFloat[reg2]+=regsFloat[reg1];
+			pc+=2;
+		} else
 		if (memory[pc]==syntax["sub:num:reg"])
 		{
 			short num=*((short*)(memory+pc+1));
@@ -243,6 +277,20 @@ int main()
 			regs[reg2]-=regs[reg1];
 			pc+=2;
 		} else
+		if (memory[pc]==syntax["sub:float:regfloat"])
+		{
+			float num=*((float*)(memory+pc+1));
+			size_t reg=*(memory+pc+5);
+			regsFloat[reg]-=num;
+			pc+=5;
+		} else
+		if (memory[pc]==syntax["sub:regfloat:regfloat"])
+		{
+			size_t reg1=*(memory+pc+1);
+			size_t reg2=*(memory+pc+2);
+			regsFloat[reg2]-=regsFloat[reg1];
+			pc+=2;
+		} else
 		if (memory[pc]==syntax["mul:num"])
 		{
 			short num=*((short*)(memory+pc+1));
@@ -253,6 +301,18 @@ int main()
 		{
 			size_t reg1=*(memory+pc+1);
 			regs[0]*=regs[reg1];
+			pc+=1;
+		} else
+		if (memory[pc]==syntax["mul:float"])
+		{
+			float num=*((float*)(memory+pc+1));
+			regsFloat[0]*=num;
+			pc+=4;
+		} else
+		if (memory[pc]==syntax["mul:regfloat"])
+		{
+			size_t reg1=*(memory+pc+1);
+			regsFloat[0]*=regsFloat[reg1];
 			pc+=1;
 		} else
 		if (memory[pc]==syntax["div:num"])

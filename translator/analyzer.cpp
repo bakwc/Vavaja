@@ -264,6 +264,6 @@ void Analyzer::process()
 		if (matched==false)
 			error(curLine_,"Syntax error");
 	}
-	memory_->print();
+	//memory_->print();
 	labels_->setLabels();
 }

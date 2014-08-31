@@ -265,7 +265,7 @@ int main(int argc, char **argv)
 		} else
 		if (memory[pc]==syntax["add:float:regfloat"])
 		{
-			float num=*((short*)(memory+pc+1));
+			float num=*((float*)(memory+pc+1));
 			size_t reg=*(memory+pc+5);
 			regsFloat[reg]+=num;
 			pc+=5;
